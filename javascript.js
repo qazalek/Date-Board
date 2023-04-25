@@ -1,132 +1,161 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+// Get the current date and time
+function getCurrentDateTime() {
+    const now = new Date();
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const day = days[now.getDay()];
+    const date = now.getDate();
+    const month = months[now.getMonth()];
+    const year = now.getFullYear();
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    let seconds = now.getSeconds();
+    let session = 'AM';
+  
+    // Convert to 12 hour format
+    if (hours > 12) {
+      hours -= 12;
+      session = 'PM';
+    }
+  
+    // Add leading zeros if necessary
+    if (hours < 10) {
+      hours = '0' + hours;
+    }
+    if (minutes < 10) {
+      minutes = '0' + minutes;
+    }
+    if (seconds < 10) {
+      seconds = '0' + seconds;
+    }
+  
+    // Update the HTML elements
+    document.getElementById('date').innerHTML = `${day}, ${month} ${date}, ${year}`;
+    document.getElementById('day').innerHTML = `${day}`;
+    document.getElementById('hours').innerHTML = `${hours}`;
+    document.getElementById('minutes').innerHTML = `${minutes}`;
+    document.getElementById('seconds').innerHTML = `${seconds}`;
+    document.getElementById('session').innerHTML = `${session}`;
   }
   
-  html {
-    font-family: "Segoe UI", Roboto, sans-serif, monospace;
+  // Call the function to update the date and time initially
+  getCurrentDateTime();
+  
+  // Update the date and time every second
+  setInterval(getCurrentDateTime, 1000);
+  function gerConvertDateItem() {
+    const time = new Date();
+    const hours = time.getHours();
+    const minutes = time.getMinutes();
+    const seconds = time.getSeconds();
+    let session = "AM";
+  
+    if (hours > 12) {
+      hours = hours - 12;
+      session = "PM";
+    }
+  
+    if (hours === 0) {
+      hours = 12;
+    }
+  
+    const formattedHours = hours < 10 ? "0" + hours : hours;
+    const formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
+    const formattedSeconds = seconds < 10 ? "0" + seconds : seconds;
+  
+    const twelveHourTime = formattedHours + ":" + formattedMinutes + ":" + formattedSeconds + " " + session;
+    const twentyFourHourTime = time.toLocaleTimeString("en-US", { hour12: false });
+  
+    const hoursElement = document.getElementById("hours");
+    const minutesElement = document.getElementById("minutes");
+    const secondsElement = document.getElementById("seconds");
+    const sessionElement = document.getElementById("session");
+    const toggleButton = document.getElementById("toggle-btn");
+  
+    if (toggleButton.innerText === "12-hr / 24-hr") {
+      hoursElement.innerText = formattedHours;
+      minutesElement.innerText = formattedMinutes;
+      secondsElement.innerText = formattedSeconds;
+      sessionElement.innerText = session;
+      toggleButton.innerText = "24-hr / 12-hr";
+    } else {
+      const [hours, minutes, seconds] = twentyFourHourTime.split(":");
+      hoursElement.innerText = hours;
+      minutesElement.innerText = minutes;
+      secondsElement.innerText = seconds;
+      sessionElement.innerText = "";
+      toggleButton.innerText = "12-hr / 24-hr";
+    }
   }
   
-  html,
-  body {
-    height: 100%;
-    margin: 0;
+  // update the time every second
+  setInterval(() => {
+    const time = new Date();
+    const dateElement = document.getElementById("date");
+    const dayElement = document.getElementById("day");
+    const hoursElement = document.getElementById("hours");
+    const minutesElement = document.getElementById("minutes");
+    const secondsElement = document.getElementById("seconds");
+    const sessionElement = document.getElementById("session");
+  
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  
+    const month = months[time.getMonth()];
+    const date = time.getDate();
+    const day = days[time.getDay()];
+    const year = time.getFullYear();
+    const hours = time.getHours();
+    const minutes = time.getMinutes();
+    const seconds = time.getSeconds();
+    let session = "AM";
+  
+    if (hours > 12) {
+      hours = hours - 12;
+      session = "PM";
+    }
+  
+    if (hours === 0) {
+      hours = 12;
+    }
+  
+    const formattedHours = hours < 10 ? "0" + hours : hours;
+    const formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
+    const formattedSeconds = seconds < 10 ? "0" + seconds : seconds;
+  
+    dateElement.innerText = `${month} ${date}, ${year}`;
+    dayElement.innerText = day;
+    hoursElement.innerText = formattedHours;
+    minutesElement.innerText = formattedMinutes;
+    secondsElement.innerText = formattedSeconds;
+    sessionElement.innerText = session;
+  }, 1000);
+  
+  function gerConvertDateItem() {
+    const hoursElement = document.getElementById('hours');
+    const sessionElement = document.getElementById('session');
+    const toggleBtn = document.getElementById('toggle-btn');
+    
+    if (toggleBtn.innerText === '12-hr / 24-hr') {
+      // Switch to 24-hour format
+      toggleBtn.innerText = '24-hr / 12-hr';
+      const hours = Number(hoursElement.innerText.slice(0, 2));
+      const session = sessionElement.innerText;
+      if (session === 'PM' && hours !== 12) {
+        hoursElement.innerText = `${hours + 12}:${hoursElement.innerText.slice(3, 5)}`;
+      } else if (session === 'AM' && hours === 12) {
+        hoursElement.innerText = `00:${hoursElement.innerText.slice(3, 5)}`;
+      }
+      sessionElement.innerText = '';
+    } else {
+      // Switch to 12-hour format
+      toggleBtn.innerText = '12-hr / 24-hr';
+      const hours = Number(hoursElement.innerText.slice(0, 2));
+      const session = hours < 12 ? 'AM' : 'PM';
+      const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
+      hoursElement.innerText = `${formattedHours}:${hoursElement.innerText.slice(3, 5)}`;
+      sessionElement.innerText = session;
+    }
   }
   
-  body {
-    display: flex;
-    align-items: center;
-    color: #212529;
-    background-color: #ffd54f;
-    font-weight: 300;
-  }
   
-  .container {
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 2rem;
-  }
-  
-  .date {
-    font-size: 3rem;
-  }
-  
-  .day-name {
-    padding-top: 0.5rem;
-    padding-bottom: 0.75rem;
-  }
-  
-  .day {
-    letter-spacing: 0.3em;
-    margin-right: -0.3em;
-  }
-  
-  .clock {
-    align-items: center;
-    justify-content: center;
-    font-size: 4rem;
-    font-weight: 400;
-    gap: 5rem;
-  }
-  
-  .clock-col {
-    text-align: center;
-  }
-  
-  .clock-label {
-    gap: 11rem;
-    font-size: 0.8rem;
-    font-weight: 400;
-    text-transform: uppercase;
-  }
-  
-  input[type="checkbox"] {
-    height: 0;
-    width: 0;
-    visibility: hidden;
-  }
-  
-  .container--btn {
-    display: flex;
-    flex: row;
-    align-items: end;
-    justify-content: center;
-    gap: 1rem;
-    font-size: 1.25rem;
-  }
-  
-  .btn {
-    display: block;
-    width: 50px;
-    height: 25px;
-    background-color: #fff;
-    border-radius: 100px;
-    cursor: pointer;
-    position: relative;
-  }
-  
-  .btn::before {
-    position: absolute;
-    content: "";
-    background-color: #4f79ff;
-    width: 22.5px;
-    height: 22.5px;
-    margin: 1.25px;
-    border-radius: 100px;
-    transition: 0.3s;
-  }
-  
-  input:checked + .btn::before {
-    transform: translateX(25px);
-  }
-  
-  .grid--3-col {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-  }
-  
-  .grid--4-col {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-  }
-  
-  .hidden {
-    display: none;
-  }
-
-  button {
-    background-color: #4f79ff;
-    color: white;
-    display: flex;
-    flex: row;
-    align-items: end;
-    justify-content: center;
-    gap: 1rem;
-    font-size: 1.25rem;
-    border: white;
-    padding: 5px;
-    border-radius: 15px 15px ;
-  }
